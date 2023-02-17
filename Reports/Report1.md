@@ -172,13 +172,13 @@ If there have been no problems with the generation of the word, a final check is
 ## Results
 The program was made to accept user input and provides instructions on how it must be formatted for smooth execution.
 Giving the program the grammar definition of Variant 19...  
-![Providing input to the program](/../Screenshots/Lab_1/input.png)
+![Providing input to the program](/Screenshots/Lab_1/input.png)
 
 The grammar, now an object within our program, will randomly generate 5 valid strings:  
-![String generation](/../Screenshots/Lab_1/gen.png)
+![String generation](/Screenshots/Lab_1/gen.png)
 
 Afterwards, the program creates a finite automaton object, asking the user to input any strings they wish in order to check if they belong to the grammar or not:  
-![Checking several strings](/../Screenshots/Lab_1/valid.png)
+![Checking several strings](/Screenshots/Lab_1/valid.png)
 
 The results can be proof-checked to be correct using other software or pen and paper given spare time.
 
