@@ -58,7 +58,18 @@ class FiniteAutomaton{
 			check_determinism();
 			//Orientation will stay right-regular for convenience.
 		}
+
+		void shift_char(char* ch){
+			if(*ch=='A'){
+				*ch = 'S';
+			}else if(*ch<='S' && *ch!=' '){
+				(*ch)--;
+			}
+		}
 		
+		//Determinism = 1 -> DFA
+		//Determinism = 0 -> NFA
+		//Determinism = -1 -> E-NFA
 		void check_determinism(){
 			for(auto x:transition){
 				vector<pair<char,char>> y = x.second;
@@ -129,12 +140,7 @@ class FiniteAutomaton{
 					return 1;
 				}
 			}else{
-				string buffer;
-				cout << "This Finite Automaton is non-deterministic, do you want to convert it?(Y/N)" << endl;
-				getline(cin,buffer);
-				if(buffer[0] == 'y' || buffer[0] == 'Y'){
-					NFA_to_DFA();
-				}
+				cout << "This Finite Automaton is non-deterministic!" << endl;
 			}
 		}
 		
@@ -142,8 +148,16 @@ class FiniteAutomaton{
 			return states;
 		}
 		
+		vector<char> get_final_states(){
+			return end_states;
+		}
+		
 		vector<char> get_alphabet(){
 			return alphabet;
+		}
+		
+		unordered_map<char,vector<pair<char,char>>> get_transitions(){
+			return transition;
 		}
 		
 		unordered_map<string, vector<string>> get_Grammar_productions(){
@@ -171,31 +185,12 @@ class FiniteAutomaton{
 			(*visited)[curr_state-'A'] = 1;
 			for(int i=0;i<connections.size();i++){
 				char next_state = connections[i].second;
-				//cout << curr_state << connections[i].first << next_state << endl;
 				if((*visited)[next_state-'A']==0 && connections[i].first == ' ' && next_state!=' '){
 					DFS(next_state,visited,e_closure);
 				}
 			}
-			
-			/*for(int i=0;i<visited->size();i++){
-				cout << (*visited)[i] << " ";
-			}
-			cout << endl;*/
-			
-			/*if((*visited)[curr_state-'A']!=1){
-				for(int i=0;i<connections.size();i++){
-					char next_state = connections[i].second;
-					if((*visited)[i] == 0 && connections[i].first == ' ' && next_state!=' '){
-						cout << endl << curr_state << "-" << connections[i].first << "-" << connections[i].second <<" ";
-						DFS(next_state,visited,e_closure);
-						(*visited)[next_state-'A'] = 1;
-					}
-				}
-			}
-			cout << endl;*/
 		}
 		
-		//TODO: Finish.
 		void NFA_to_DFA(){
 			//Create Epsilon-closures for all states
 			unordered_map<char,vector<char>> e_closure;
@@ -209,13 +204,158 @@ class FiniteAutomaton{
 				}
 			}
 			
-			for(int i=0;i<e_closure.size();i++){
-				cout << i << ":";
-				for(int j=0;j<e_closure[i+'A'].size();j++){
-					cout << " "<< e_closure[i+'A'][j];
-				}
-				cout << endl;
+			vector<vector<vector<char>>> state_table;
+			vector<vector<char>> temp;
+			temp.push_back(e_closure['A']);
+			for(int i=0;i<alphabet.size();i++){
+				temp.push_back(vector<char>(0));
 			}
+			state_table.push_back(temp);
+			
+			int row=0;
+			while(state_table.size()<=26 && row!=state_table.size()){
+				for(int j=0;j<alphabet.size();j++){
+					//Find all states reachable through a character, followed by eps-transitions
+					vector<char> pending_state;
+					for(int k=0;k<state_table[row][0].size();k++){
+						vector<pair<char,char>> connections = transition[state_table[row][0][k]];
+						for(int x=0;x<connections.size();x++){
+							if(connections[x].first == alphabet[j]){
+								pending_state.insert(pending_state.end(),e_closure[connections[x].second].begin(),e_closure[connections[x].second].end());
+							}
+						}
+					}
+					
+					//Clear the pending state of repeating elements
+					vector<char> unique_states;
+					int x=0;
+					while(x<pending_state.size()){
+						int erased = 0;
+						for(int y=0;y<unique_states.size();y++){
+							if(pending_state[x] == unique_states[y]){
+								pending_state.erase(pending_state.begin()+x);
+								erased = 1;
+							}
+						}
+						if(!erased){
+							unique_states.push_back(pending_state[x]);
+							x++;
+						}
+					}
+					
+					//Sort the remaining characters
+					sort(pending_state.begin(),pending_state.end());
+					
+					state_table[row][j+1] = pending_state;
+					
+					if(pending_state.size() > 0){
+						//If the state set has been analysed before, don't add it
+						int unique = 1;
+						for(int i=0;i<=row;i++){
+							if(state_table[i][0] == pending_state){
+								unique = 0;
+							}
+						}
+						
+						//If the state is new, add it to the bottom of our table in a new row
+						if(unique){
+							vector<vector<char>> temp;
+							temp.push_back(pending_state);
+							for(int i=0;i<alphabet.size();i++){
+								temp.push_back(vector<char>(0));
+							}
+							state_table.push_back(temp);
+						}
+					}
+				}
+				row++;
+			}
+			
+			if(state_table.size()>26){
+				cout << "The resulting conversion would have more than 26 states, not enough letters to label them all!" << endl;
+			}else{
+				//Map our new states to single characters
+				vector<vector<char>> new_state_arr;
+				for(int i=0;i<state_table.size();i++){
+					new_state_arr.push_back(state_table[i][0]);
+				}
+				
+				//Replace our final states
+				vector<char> temp;
+				char index;
+				for(int i=0;i<state_table.size();i++){
+					int terminal = 0;
+					for(int k=0;k<state_table[i][0].size() && terminal == 0;k++){
+						for(int x=0;x<end_states.size();x++){
+							if(state_table[i][0][k] == end_states[x]){
+								index = i+'A';
+								shift_char(&index);
+								temp.push_back(index);
+								terminal = 1;
+								break;
+							}
+						}
+					}
+				}
+				end_states = temp;
+				
+				states.clear();
+				transition.clear();
+				
+				//Replace the states and transitions accordingly.
+				for(int i=0;i<state_table.size();i++){
+					for(int j=0;j<alphabet.size();j++){
+						if(state_table[i][j+1].size()>0){
+							pair<char,char> temp;
+							temp.first = alphabet[j];
+							for(int k=0;k<new_state_arr.size();k++){
+								if(state_table[i][j+1] == new_state_arr[k]){
+									index = k+'A';
+									shift_char(&index);
+									temp.second = index;
+									break;
+								}
+							}
+							index = i+'A';
+							shift_char(&index);
+							transition[index].push_back(temp);
+						}
+					}
+					index = i+'A';
+					shift_char(&index);
+					states.push_back(index);
+				}
+				
+				//Add our hidden exit transitions for the grammar conversion and word-checking
+				for(int i=0;i<end_states.size();i++){
+					pair<char,char> temp(' ',' ');
+					transition[end_states[i]].push_back(temp);
+				}
+				determinism = 1;
+				
+				print();
+			}
+		}
+		
+		void relabel(){
+			for(int i=0;i<states.size();i++){
+				shift_char(&states[i]);
+			}
+			
+			for(int i=0;i<end_states.size();i++){
+				shift_char(&end_states[i]);
+			}
+			
+			unordered_map<char,vector<pair<char,char>>> temp;
+			for(auto x:transition){
+				char ch = x.first;
+				shift_char(&ch);
+				for(int i=0;i<x.second.size();i++){
+					shift_char(&x.second[i].second);
+				}
+				temp[ch]=x.second;
+			}
+			transition = temp;
 		}
 		
 		void print(){
@@ -271,5 +411,6 @@ class FiniteAutomaton{
 					}
 				}
 			}
+			cout << endl;
 		}
 };
