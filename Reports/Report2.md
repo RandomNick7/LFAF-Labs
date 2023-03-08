@@ -383,19 +383,19 @@ Giving the program the finite automaton definition of Variant 19...
 ![Text output](../Screenshots/Lab_2/convert.PNG)
 
 &emsp;Afterwards, the program convers the DFA into a Grammar. This is possible directly from the NFA as well:  
-![Conversion to grammar with more text output](../Screenshots/Lab_2/to_grammar.png)
+![Conversion to grammar with more text output](../Screenshots/Lab_2/to_grammar.PNG)
 
 &emsp;The Finite Automaton is then displayed to the user, if so is chosen. Several screenshots of NFAs and their DFA equivalents are provided below, the first being Variant #19 given by the lab conditions. Finite Automatons always have their starting state denoted by the letter 'S'.
 
 First FA:  
-![Variant 19, NFA](../Screenshots/Lab_2/NFA1.PNG)  
-![Variant 19, DFA](../Screenshots/Lab_2/DFA1.PNG)  
+![Variant 19, NFA](../Screenshots/Lab_2/NFA1.png)  
+![Variant 19, DFA](../Screenshots/Lab_2/DFA1.png)  
 Second FA:  
-![Example automaton, E-NFA](../Screenshots/Lab_2/NFA2.PNG)  
-![Example automaton, DFA](../Screenshots/Lab_2/DFA2.PNG)  
+![Example automaton, E-NFA](../Screenshots/Lab_2/NFA2.png)  
+![Example automaton, DFA](../Screenshots/Lab_2/DFA2.png)  
 Third FA:  
-![More complex example automaton, E-NFA](../Screenshots/Lab_2/NFA3.PNG)  
-![More complex example automaton, DFA](../Screenshots/Lab_2/DFA3.PNG)  
+![More complex example automaton, E-NFA](../Screenshots/Lab_2/NFA3.png)  
+![More complex example automaton, DFA](../Screenshots/Lab_2/DFA3.png)  
 
 &emsp;The results can be proof-checked to be correct using other software or pen and paper given a fair amount of spare time.
 
