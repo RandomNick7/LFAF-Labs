@@ -400,8 +400,8 @@ Third FA:
 &emsp;The results can be proof-checked to be correct using other software or pen and paper given a fair amount of spare time.
 
 ## Conclusion
-&emsp;Over the course of this laboratory work, a functioning implementation of the mathematical model of the newly learned concepts of a grammar and a finite automaton have been successfully made and tested, providing useful results and serving as a basis for developing more advanced algorithms based on the aforementioned concepts.
+&emsp;Over the course of this laboratory work, the implementation of the Finite Automaton has been expanded and more features have been improved, adding more functionality to last lab work's class. The Grammar class has also gained an improvement, now its type being able to be determined no matter the productions. The property of determinism for Finite Automata has been explored and have successfully made a method of converting e-NFAs and NFAs to equivallent DFAs.  
 
 ## References
-Johnson, M., & Zelenski, J. (2012, June 29). Formal Grammars. Retrieved February 17, 2023, from https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/handouts/080%20Formal%20Grammars.pdf
+Johnson, M., & Zelenski, J. (2012, June 29). Formal Grammars. Retrieved February 17, 2023, from https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/handouts/080%20Formal%20Grammars.pdf  
 University of Pennsylvania - Penn Engineering (2019, Spring). DFA's, NFA's, Regular Languages. Retrieved March 7, 2023, from https://www.seas.upenn.edu/~cis2620/notes/cis262sl1-aut.pdf
