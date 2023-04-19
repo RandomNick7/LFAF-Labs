@@ -49,6 +49,14 @@ int main(int argc, char **argv){
 				cout << "Grammar is of type " << G->type << endl;
 			}
 			
+			if(G->type >= 2){
+				cout << "Convert to Chomsky Normal Form? (Y/N)" << endl;
+				cin >> buffer;
+				if(buffer[0] == 'Y' || buffer[0] == 'y'){
+					G->to_Chomsky();
+				}
+			}
+			
 			if(G->type>=2){
 				cout << "Generate 10 random words using the grammar? (Y/N)" << endl;
 				cin >> buffer;
@@ -60,19 +68,23 @@ int main(int argc, char **argv){
 				}
 				cout << endl;
 				
-				FiniteAutomaton F = G->convert_to_FA();
-				F.print();
-				
-				cout << "Enter strings to check if they belong to the language!" << endl;
-				cout << "Hyphen to exit" << endl;
-				cin >> buffer;
-				while(buffer[0]!='-'){
-					if(F.is_valid_word(buffer)){
-						cout << "Belongs to language!" << endl;
-					}else{
-						cout << "Does not belong!" << endl;
-					}
+				if(G->type>2){
+					FiniteAutomaton F = G->convert_to_FA();
+					F.print();
+					
+					cout << "Enter strings to check if they belong to the language!" << endl;
+					cout << "Hyphen to exit" << endl;
 					cin >> buffer;
+					while(buffer[0]!='-'){
+						if(F.is_valid_word(buffer)){
+							cout << "Belongs to language!" << endl;
+						}else{
+							cout << "Does not belong!" << endl;
+						}
+						cin >> buffer;
+					}
+				}else{
+					cout << "Grammar type is " << G->type << ", incompatible for a Finite Automaton." << endl;
 				}
 			}
 		}
