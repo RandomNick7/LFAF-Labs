@@ -462,6 +462,7 @@ class Grammar{
 				V_n+=non_terminal_vars[i];
 			}
 			
+			//Check which terminals are used along non-terminals
 			string V_t;
 			for(int i=0; i<non_terminal_vars.size(); i++){
 				string left(1,non_terminal_vars[i]);
@@ -479,6 +480,7 @@ class Grammar{
 				}
 			}
 			
+			//Reserve a non-terminal for each
 			int reserved_char[26] = {0};
 			bool err = false;
 			for(int i=0; i<non_terminal_vars.size(); i++){
@@ -509,6 +511,7 @@ class Grammar{
 				}
 			}
 			
+			//If successfully reserved, substitute the terminals with the new non-terminals in rules with size > 2
 			if(!err){
 				for(int i=0; i<non_terminal_vars.size(); i++){
 					string left(1,non_terminal_vars[i]);
@@ -529,7 +532,9 @@ class Grammar{
 					string left(1,non_terminal_vars[i]);
 					for(int j=0; j<prod_rules[left].size(); j++){
 						string rule = prod_rules[left][j];
-						char source = left[0];
+						//While a rule is greater than 2 characters long, generate a new non-terminal if needed
+						//The new non-terminal will substitute 2 characters in the old rule, reducing its size by 1
+						//Make sure to add the new variables and productions to the grammar
 						while(rule.size()>2 && !err){
 							string temp_rule(rule.begin(), rule.begin()+2);
 							int k=0;
@@ -542,27 +547,21 @@ class Grammar{
 							
 							if(k == prods_used.size()){
 								prods_used.push_back(temp_rule);
-								if(char_index == 26){
+								int l = char_index;
+								while(reserved_char[l] && l<26){
+									l++;
+								}
+								if(l == 26){										
 									cout << "Not enough characters to reserve for Chomsy Normal Form! Partial result:" << endl;
 									err = true;
 									break;
-								}else{
-									int l = char_index;
-									while(reserved_char[l] && l<26){
-										l++;
-									}
-									if(l == 26){										
-										cout << "Not enough characters to reserve for Chomsy Normal Form! Partial result:" << endl;
-										err = true;
-										break;
-									}
-									reserved_char[l]++;
-									char_index = l;
-									substitutes+=char_index+'A';
-									non_terminal_vars.push_back(char_index+'A');
-									string temp(1,substitutes[k]);
-									prod_rules[temp].push_back(temp_rule);
 								}
+								reserved_char[l]++;
+								char_index = l;
+								substitutes+=char_index+'A';
+								non_terminal_vars.push_back(char_index+'A');
+								string temp(1,substitutes[k]);
+								prod_rules[temp].push_back(temp_rule);
 							}
 							string temp(1,substitutes[k]);
 							rule.replace(0,2,temp);
