@@ -16,22 +16,22 @@ The rules state that all productions must follow the following form: A->BC or A-
 ## Implementation Description
 4 new functions have been added to the Grammar object, 3 of which are auxiliary.
 `delete_delta_vars()` is for deleting variables outside of a specific set  
-`create_prod_combos()` is used for generating new productions by ommitting specific symbols in a specific way to guarantee all combinations' generation  
+`create_prod_combos()` is used for generating new productions by omitting specific symbols in a specific way to guarantee all combinations' generation  
 `remove_duplicate_prods()` does as the name says: removes duplicate productions from the grammar  
 
-`to_Chomsky()` is split up into 6 parts, each with code responsible of performing interemediary steps for the conversion.  
+`to_Chomsky()` is split up into 6 parts, each with code responsible of performing intermediary steps for the conversion.  
 Code examples have been omitted due to how robust the relevant code is, available in `grammar.hpp`. It is meant to work on any type-2 grammar.
 
 - Step 1: Elimination of ε-productions
 
-&emsp;The code checks for any production of the type A->ε and other productions from all other variables leading to A. Any non-terminal with a rule of the type A->B~1~B~2~...B~n~ where B~i~ is a nullable character will render A itself nullable.
-By repeatedly going through all the rules, all the nullable variables are found. Productions of the form A->ε are eliminated from the grammar. If that production aws the only one a variable had, the variable itself is eliminated from the grammar as well.
+&emsp;The code checks for any production of the type A->ε and other productions from all other variables leading to A. Any non-terminal with a rule of the type A->B<sub>1</sub>B<sub>2</sub>...B<sub>n</sub> where B<sub>i</sub> is a nullable character will render A itself nullable.
+By repeatedly going through all the rules, all the nullable variables are found. Productions of the form A->ε are eliminated from the grammar. If that production was the only one a variable had, the variable itself is eliminated from the grammar as well.
 All productions with a nullable non-terminal symbol in them will have all possible variations with specific symbols absent be generated as well using `create_prod_combos()`. This may produce duplicate productions, which are later cleaned up.
 
 - Step 2: Removing unit productions
 
 &emsp;The code checks every production to see if there are any of size 1 and that lead to a non-terminal. In that case, the production is eliminated, and all the rules of the eliminated rule's left hand side are introduced to the current symbol's productions. If any unit productions are introduced, they are substituted as well.
-A string called `visited` keeps track of which variables have been substitude already, to avoid infinite loops or self-referenciation (rules of the type A->A)  
+A string called `visited` keeps track of which variables have been substituted already, to avoid infinite loops or self-references (rules of the type A->A)  
 This may also generate duplicate productions, which are cleaned up at the end.
 
 - Step 3: Eliminating inaccessible symbols
@@ -51,7 +51,7 @@ Any instances of terminals in rules with more than 1 character produced are subs
 
 - Step 6: Splitting productions with more than 2 non-terminals
 
-&emsp;At this point, the grammar only has rules of the type A->a or A->B~1~B~2~...B~n~, where A, B~i~ are non-terminal and a is terminal. The A->a kind are ignored in this step.
+&emsp;At this point, the grammar only has rules of the type A->a or A->B<sub>1</sub>B<sub>2</sub>...B<sub>n</sub>, where A, B<sub>i</sub> are non-terminal and a is terminal. The A->a kind are ignored in this step.
 Checking for rules greater than size 2, they are split up in an iterative process where the first 2 characters of a rule are replaced with a new non-terminal with a single production to those 2 characters.
 This process repeats iteratively until all rules are of size 2, achieving the Chomsky Normal Form.
 
