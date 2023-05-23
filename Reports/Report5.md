@@ -75,7 +75,7 @@ struct Node{
 
 `next_child`, as in "sibling" implies no descent within the AST. The images below show how this conversion works:
 
-![A visual representation of a generic tree](../Screenshots/Lab_5/generic_tree.png)  
+![A visual representation of a generic tree](../Screenshots/Lab_5/general_tree.png)  
 ![The same generic tree, restructured in binary form](../Screenshots/Lab_5/binary_tree.png)
 
 
