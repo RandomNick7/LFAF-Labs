@@ -75,8 +75,8 @@ struct Node{
 
 `next_child`, as in "sibling" implies no descent within the AST. The images below show how this conversion works:
 
-![A visual representation of a generic tree](../Screenshots/Lab_2/generic_tree.png)  
-![The same generic tree, restructured in binary form](../Screenshots/Lab_2/binary_tree.png)
+![A visual representation of a generic tree](../Screenshots/Lab_5/generic_tree.png)  
+![The same generic tree, restructured in binary form](../Screenshots/Lab_5/binary_tree.png)
 
 
 The default node the parser starts is called `root`, which corresponds to `<program>` within the grammar. The parser will analyse a specific number of tokens depending on its `Node* AST` argument and will check if they follow the grammar rules. If they do, add the tokens to the AST and move to the first child to be analyzed. This has been implemented with a lengthy `if...else` block, as C++ does not support `switch` statements with strings.  
